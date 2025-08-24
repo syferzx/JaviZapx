@@ -6,6 +6,16 @@
     <title>JaviZapX Power Fit</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- PWA Meta Tags -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#4ecdc4">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="JaviZapX Power Fit">
+    <link rel="apple-touch-icon" href="icon-192.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
     <style>
         /* Estilos adicionales para compatibilidad con styles.css */
         :root {
@@ -54,17 +64,22 @@
             z-index: 1000;
         }
 
-        .logo {
-            width: 36px;
-            height: 36px;
-            background: linear-gradient(45deg, var(--primary), #e7c6ff);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.2rem;
-            animation: gentleBounce 4s ease-in-out infinite;
-        }
+/* Logo del navbar: imagen plana, sin fondo ni borde redondeado */
+.navbar-logo {
+  height: 40px;       /* ajusta tamaño a gusto */
+  width: auto;
+  display: block;
+}
+
+/* Por si queda alguna referencia a .logo en el navbar, la neutralizamos */
+nav img.logo {
+  background: transparent !important;
+  border-radius: 0 !important;
+  animation: none !important;
+  width: auto !important;
+  height: 40px !important;
+}
+
 
         @keyframes gentleBounce {
             0%, 100% { transform: scale(1); }
@@ -425,25 +440,37 @@
     </style>
 </head>
 <body>
-    <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg">
-        <div class="container">
-            <div class="d-flex align-items-center">
-                <div class="logo me-3">🏃‍♀️</div>
-                <span class="h4 mb-0 fw-bold">JaviZapX Power Fit</span>
-            </div>
-            <div class="d-flex gap-2">
-                <!-- Removido el badge "Versión Offline" -->
-            </div>
-        </div>
-    </nav>
+<nav class="navbar navbar-expand-lg bg-white border-bottom">
+  <div class="container">
+    <!-- Logo -->
+    <a class="navbar-brand d-flex align-items-center" href="#">
+      <img src="logo.png" alt="JaviZapX Power Fit" class="navbar-logo">
+    </a>
+
+    <!-- Botón hamburguesa (si luego agregas links) -->
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <!-- Menú (puedes agregar links aquí) -->
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ms-auto">
+        <!-- Ejemplos
+        <li class="nav-item"><a class="nav-link" href="#">Inicio</a></li>
+        <li class="nav-item"><a class="nav-link" href="#">Rutinas</a></li>
+        -->
+      </ul>
+    </div>
+  </div>
+</nav>
+
 
     <!-- Contenido principal -->
     <div class="container py-4">
         <!-- Encabezado -->
         <div class="text-center mb-4">
             <h1 class="main-title">Mi Rutina Mágica ✨</h1>
-            <p class="subtitle">¡Ejercicios súper divertidos al estilo JaviZapX!</p>
+            <p class="subtitle">¡17 ejercicios súper divertidos para mantenerte en forma, campeona!</p>
         </div>
 
         <!-- Progreso con botón de reset -->
@@ -690,6 +717,71 @@
             "¡Con energía, campeona!",
             "¡Eres una guerrera increíble!"
         ];
+
+        // PWA Installation
+        let deferredPrompt = null;
+        let installButton = null;
+
+        // Detectar si puede instalarse
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            
+            // Crear botón de instalación si no existe
+            if (!installButton) {
+                installButton = document.createElement('button');
+                installButton.className = 'btn btn-primary btn-install';
+                installButton.innerHTML = '📱 Instalar App';
+                installButton.style.cssText = `
+                    position: fixed;
+                    bottom: 20px;
+                    right: 20px;
+                    z-index: 1000;
+                    border-radius: 50px;
+                    padding: 12px 20px;
+                    font-weight: 600;
+                    box-shadow: 0 4px 20px rgba(78, 205, 196, 0.3);
+                    background: linear-gradient(135deg, #4ecdc4 0%, #45b7d1 100%);
+                    border: none;
+                    color: white;
+                    animation: bounceIn 0.5s ease;
+                `;
+                document.body.appendChild(installButton);
+
+                installButton.addEventListener('click', installPWA);
+            }
+        });
+
+        // Función para instalar PWA
+        async function installPWA() {
+            if (!deferredPrompt) return;
+
+            deferredPrompt.prompt();
+            const result = await deferredPrompt.userChoice;
+            
+            if (result.outcome === 'accepted') {
+                console.log('PWA instalada correctamente');
+                showToast('🎉 ¡App instalada correctamente!', 'success');
+            }
+            
+            deferredPrompt = null;
+            if (installButton) {
+                installButton.remove();
+                installButton = null;
+            }
+        }
+
+        // Registrar Service Worker
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', async () => {
+                try {
+                    const registration = await navigator.serviceWorker.register('sw.js');
+                    console.log('Service Worker registrado:', registration);
+                } catch (error) {
+                    console.log('Error registrando Service Worker:', error);
+                }
+            });
+        }
 
         // Inicialización
         document.addEventListener('DOMContentLoaded', () => {
