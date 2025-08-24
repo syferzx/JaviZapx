@@ -1,0 +1,1290 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title>JaviZapX Power Fit</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Estilos adicionales para compatibilidad con styles.css */
+        :root {
+            --primary: #ff6b9d;
+            --secondary: #4ecdc4;
+            --accent: #45b7d1;
+            --warning: #ffa726;
+            --success: #66bb6a;
+            --danger: #f25c54;
+            --bg-soft: #f8fafc;
+            --text-dark: #1a202c;
+            --text-muted: #718096;
+            --white: #ffffff;
+            --border-radius: 20px;
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            --shadow-hover: 0 8px 30px rgba(0, 0, 0, 0.12);
+        }
+
+        body {
+            background: radial-gradient(ellipse at center, #ffeef7 0%, #f0f9ff 40%, #e0f2fe 100%);
+            min-height: 100vh;
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(255, 182, 193, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(173, 216, 230, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(221, 160, 221, 0.08) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .navbar {
+            background: rgba(255, 255, 255, 0.98) !important;
+            backdrop-filter: blur(20px);
+            border-bottom: 2px solid rgba(255, 107, 157, 0.1);
+            box-shadow: 0 4px 20px rgba(255, 107, 157, 0.1);
+            position: relative;
+            z-index: 1000;
+        }
+
+        .logo {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(45deg, var(--primary), #e7c6ff);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            animation: gentleBounce 4s ease-in-out infinite;
+        }
+
+        @keyframes gentleBounce {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .main-title {
+            font-size: 2.5rem;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 0.5rem;
+        }
+
+        .subtitle {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            font-weight: 400;
+        }
+
+        /* Progreso */
+        .progress-section {
+            background: var(--white);
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+            margin-bottom: 2rem;
+        }
+
+        .progress-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .btn-reset {
+            background: linear-gradient(135deg, var(--warning) 0%, #ff9800 100%);
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-weight: 600;
+            padding: 0.75rem 1.5rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            font-size: 0.9rem;
+            box-shadow: var(--shadow);
+        }
+
+        .btn-reset:hover {
+            transform: scale(1.05);
+            box-shadow: var(--shadow-hover);
+        }
+
+        /* Secciones de ejercicios */
+        .section-header {
+            background: linear-gradient(135deg, var(--secondary) 0%, var(--accent) 100%);
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: var(--border-radius);
+            margin-bottom: 1rem;
+            font-weight: 600;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: var(--shadow);
+        }
+
+        .section-icon {
+            font-size: 1.5rem;
+        }
+
+        /* Ejercicios - usando clases que coincidan con el CSS */
+        .exercise-card {
+            background: rgba(255, 255, 255, 0.9);
+            border: 2px solid rgba(255, 107, 157, 0.2);
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .exercise-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(135deg, #ff8a95 0%, #ffa726 50%, #66bb6a 100%);
+        }
+
+        .exercise-card:hover {
+            transform: translateY(-3px) rotate(1deg);
+            border-color: var(--primary);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .exercise-card.completed {
+            background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%);
+            border-color: var(--success);
+        }
+
+        .exercise-card.completed::after {
+            content: '✅';
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            font-size: 1.2rem;
+        }
+
+        .exercise-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .exercise-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-right: 1rem;
+            filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.1));
+            animation: wiggle 4s ease-in-out infinite;
+        }
+
+        @keyframes wiggle {
+            0%, 100% { transform: rotate(0deg); }
+            25% { transform: rotate(5deg); }
+            75% { transform: rotate(-5deg); }
+        }
+
+        .exercise-icon.calentamiento { background: linear-gradient(45deg, #ff6b35, #f7931e); }
+        .exercise-icon.superior { background: linear-gradient(45deg, #ffa726, #ffcc02); }
+        .exercise-icon.abdominal { background: linear-gradient(45deg, #f25c54, #ff6b9d); }
+        .exercise-icon.piernas { background: linear-gradient(45deg, #06d6a0, #4ecdc4); }
+
+        .exercise-info {
+            flex: 1;
+        }
+
+        .exercise-name {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin: 0;
+        }
+
+        .exercise-type {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin: 0;
+        }
+
+        .exercise-checkbox {
+            width: 24px;
+            height: 24px;
+            accent-color: var(--success);
+            cursor: pointer;
+        }
+
+        /* Controles de ejercicio */
+        .exercise-controls {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-top: 1rem;
+            padding: 1rem;
+            background: #f8fafc;
+            border-radius: 12px;
+        }
+
+        .control-group {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .control-btn {
+            width: 36px;
+            height: 36px;
+            border: none;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+
+        .control-btn.decrease {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
+        .control-btn.increase {
+            background: #dcfce7;
+            color: #16a34a;
+        }
+
+        .control-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .control-value {
+            background: var(--white);
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 0.5rem 1rem;
+            font-weight: 600;
+            min-width: 80px;
+            text-align: center;
+            color: var(--text-dark);
+        }
+
+        /* Botón de comenzar - usando clases similares a btn-kids */
+        .btn-start {
+            background: linear-gradient(135deg, #ff8a95 0%, #ffa726 50%, #66bb6a 100%);
+            border: none;
+            border-radius: var(--border-radius);
+            color: white;
+            font-weight: 600;
+            padding: 0.75rem 1.5rem;
+            transition: all 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
+            box-shadow: 0 8px 32px rgba(255, 107, 157, 0.15);
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+
+        .btn-start:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 48px rgba(255, 107, 157, 0.25);
+            color: white;
+        }
+
+        .btn-start::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn-start:hover::before {
+            left: 100%;
+        }
+
+        /* Modal mejorado */
+        .modal-content {
+            border: none;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+        }
+
+        .modal-header-custom {
+            background: linear-gradient(135deg, var(--primary) 0%, #ffa726 100%);
+            color: white;
+            padding: 1.5rem;
+            border: none;
+        }
+
+        .modal-body-custom {
+            background: linear-gradient(135deg, #f8fafc 0%, #e3f2fd 100%);
+            padding: 2rem;
+        }
+
+        .timer-display {
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--success);
+            text-align: center;
+        }
+
+        .reps-display {
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--warning);
+            text-align: center;
+        }
+
+        .precount-display {
+            font-size: 4rem;
+            font-weight: 700;
+            color: var(--primary);
+            text-align: center;
+            animation: pulse 1s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .motivation-text {
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            font-weight: 500;
+            margin-top: 1rem;
+        }
+
+        /* Contenedor de GIF */
+        .gif-container {
+            text-align: center;
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 1rem;
+            max-height: 200px;
+            overflow: hidden;
+        }
+
+        .exercise-gif {
+            max-width: 100%;
+            max-height: 180px;
+            height: auto;
+            border-radius: 8px;
+            object-fit: contain;
+        }
+
+        .no-gif {
+            color: var(--text-muted);
+            font-style: italic;
+            padding: 2rem;
+            background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+            border-radius: 8px;
+            border: 2px dashed #cbd5e0;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container { padding: 1rem; }
+            .main-title { font-size: 2rem; }
+            .exercise-controls { 
+                flex-direction: column; 
+                align-items: stretch;
+            }
+            .control-group {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg">
+        <div class="container">
+            <div class="d-flex align-items-center">
+                <div class="logo me-3">🏃‍♀️</div>
+                <span class="h4 mb-0 fw-bold">JaviZapX Power Fit</span>
+            </div>
+            <div class="d-flex gap-2">
+                <!-- Removido el badge "Versión Offline" -->
+            </div>
+        </div>
+    </nav>
+
+    <!-- Contenido principal -->
+    <div class="container py-4">
+        <!-- Encabezado -->
+        <div class="text-center mb-4">
+            <h1 class="main-title">Mi Rutina Mágica ✨</h1>
+            <p class="subtitle">¡Ejercicios súper divertidos al estilo JaviZapX!</p>
+        </div>
+
+        <!-- Progreso con botón de reset -->
+        <div id="progressSection" class="progress-section">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h3 class="progress-title mb-0">🏆 Tu Progreso</h3>
+                <button id="btnResetProgress" class="btn-reset" title="Reiniciar todo el progreso">
+                    🔄 Reset
+                </button>
+            </div>
+            <div class="progress mb-2">
+                <div class="progress-bar" id="progressBar" role="progressbar" style="width: 0%"></div>
+            </div>
+            <div class="progress-info">
+                <span id="completedCount">0</span> de <span id="totalCount">17</span> ejercicios completados
+                <span id="progressEmoji">🌱</span>
+            </div>
+        </div>
+
+        <!-- Lista de ejercicios por categoría -->
+        <div id="exercisesContainer">
+            <!-- Los ejercicios se cargarán aquí -->
+        </div>
+    </div>
+
+    <!-- Modal de confirmación de reset -->
+    <div class="modal fade" id="modalResetConfirm" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content" style="border-radius: var(--border-radius); border: none;">
+                <div class="modal-header border-0" style="background: linear-gradient(135deg, var(--warning), #ff9800);">
+                    <h5 class="modal-title text-white fw-bold">🔄 ¿Reiniciar progreso?</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body text-center p-4">
+                    <div class="mb-3" style="font-size: 3rem;">🤔</div>
+                    <p class="fw-bold mb-1">¿Estás seguro que quieres reiniciar?</p>
+                    <p class="text-muted">Todos los ejercicios volverán a estar sin completar</p>
+                    <p class="small text-warning">¡Esta acción no se puede deshacer!</p>
+                </div>
+                <div class="modal-footer border-0 d-flex gap-2">
+                    <button type="button" class="btn btn-outline-secondary flex-fill" data-bs-dismiss="modal">❌ Cancelar</button>
+                    <button type="button" id="confirmReset" class="btn btn-warning flex-fill">🔄 Reiniciar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de ejercicio -->
+    <div class="modal fade" id="modalRun" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header-custom">
+                    <h4 class="modal-title fw-bold m-0" id="runTitle">¡A ejercitarse!</h4>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body-custom">
+                    <div class="text-center mb-3">
+                        <span class="badge bg-primary px-3 py-2 fw-bold" id="runCategory">Ejercicio</span>
+                    </div>
+                    
+                    <!-- Contenedor del GIF -->
+                    <div id="gifContainer" class="gif-container mb-3">
+                        <div class="no-gif">Cargando animación...</div>
+                    </div>
+                    
+                    <!-- Cuenta regresiva inicial -->
+                    <div id="precount" class="text-center">
+                        <div class="precount-display" id="precountNumber">3</div>
+                        <p class="lead text-muted">¡Prepárate!</p>
+                    </div>
+                    
+                    <!-- Timer -->
+                    <div id="timer" class="text-center d-none">
+                        <div class="timer-display" id="timerDisplay">00:30</div>
+                        <div class="progress mx-auto mt-3" style="width: 200px; height: 8px;">
+                            <div class="progress-bar bg-success progress-bar-striped progress-bar-animated" 
+                                 id="timerProgress" role="progressbar" style="width: 100%"></div>
+                        </div>
+                        <p class="motivation-text">⏰ ¡Sigue así, campeona!</p>
+                    </div>
+                    
+                    <!-- Repeticiones -->
+                    <div id="reps" class="text-center d-none">
+                        <div class="reps-display" id="repsDisplay">x10</div>
+                        <p class="motivation-text">🔢 ¡Cuenta cada una!</p>
+                    </div>
+                    
+                    <!-- Motivación -->
+                    <div class="mt-3">
+                        <p class="motivation-text" id="motivationText">💪 ¡Tú puedes hacerlo súper bien, princesa!</p>
+                    </div>
+                </div>
+                <div class="modal-footer border-0 d-flex justify-content-center">
+                    <button type="button" class="btn btn-success btn-lg" id="btnCompleteExercise">
+                        ✅ ¡Listo!
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de celebración -->
+    <div class="modal fade" id="modalCelebration" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-body text-center p-5" style="background: linear-gradient(135deg, var(--primary), var(--success));">
+                    <div class="text-white">
+                        <div style="font-size: 4rem; margin-bottom: 1rem;">🎉</div>
+                        <h2 class="fw-bold mb-3">¡FELICIDADES!</h2>
+                        <p class="lead mb-3">¡Has completado toda tu rutina!</p>
+                        <p>¡Eres una súper atleta increíble!</p>
+                        <button type="button" class="btn btn-light btn-lg mt-3" data-bs-dismiss="modal">
+                            🌟 ¡Genial!
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        // 📦 EJERCICIOS PREDEFINIDOS (desde CSV)
+        const EXERCISES = [
+            { id: 5, name: "Rodillas arriba", category: "calentamiento", etype: "timer" },
+            { id: 6, name: "Rodillas al lado", category: "calentamiento", etype: "timer" },
+            { id: 7, name: "Rodillas cruzadas", category: "calentamiento", etype: "timer" },
+            { id: 8, name: "Salto estrella", category: "calentamiento", etype: "timer" },
+            { id: 9, name: "Lunges", category: "calentamiento", etype: "timer" },
+            { id: 11, name: "Mancuerna sube de frente", category: "superior", etype: "reps" },
+            { id: 13, name: "Mancuerna laterales", category: "superior", etype: "reps" },
+            { id: 12, name: "Abdominal piernas extendidas sube y baja", category: "abdominal", etype: "reps" },
+            { id: 14, name: "Abdominal extendiendo y recoje", category: "abdominal", etype: "reps" },
+            { id: 16, name: "Abdominal pasa la pelota", category: "abdominal", etype: "reps" },
+            { id: 17, name: "Panteras", category: "abdominal", etype: "reps" },
+            { id: 10, name: "Sentadillas espejo chocando palmas", category: "piernas", etype: "reps" },
+            { id: 15, name: "Sentadilla con mancuerna extendida", category: "piernas", etype: "reps" },
+            { id: 18, name: "Levanta pierna lateral acostado", category: "piernas", etype: "reps" },
+            { id: 19, name: "Cangrejo de espalda torso hacia arriba", category: "piernas", etype: "reps" },
+            { id: 20, name: "Burpie", category: "piernas", etype: "reps" },
+            { id: 21, name: "Salto en cuclillas", category: "piernas", etype: "reps" }
+        ];
+
+        // 🎬 LISTA DE GIFS PREDEFINIDOS (agregar todos los que tengas en assets/gif/)
+        const availableGifs = [
+            { filename: 'ejercicio1.gif', path: 'assets/gif/ejercicio1.gif' },
+            { filename: 'ejercicio2.gif', path: 'assets/gif/ejercicio2.gif' },
+            { filename: 'ejercicio3.gif', path: 'assets/gif/ejercicio3.gif' },
+            { filename: 'ejercicio4.gif', path: 'assets/gif/ejercicio4.gif' },
+            { filename: 'ejercicio5.gif', path: 'assets/gif/ejercicio5.gif' },
+            { filename: 'ejercicio6.gif', path: 'assets/gif/ejercicio6.gif' },
+            { filename: 'ejercicio7.gif', path: 'assets/gif/ejercicio7.gif' },
+            { filename: 'ejercicio8.gif', path: 'assets/gif/ejercicio8.gif' },
+            { filename: 'ejercicio9.gif', path: 'assets/gif/ejercicio9.gif' },
+            { filename: 'ejercicio10.gif', path: 'assets/gif/ejercicio10.gif' },
+            { filename: 'ejercicio11.gif', path: 'assets/gif/ejercicio11.gif' },
+            { filename: 'ejercicio12.gif', path: 'assets/gif/ejercicio12.gif' },
+            { filename: 'ejercicio13.gif', path: 'assets/gif/ejercicio13.gif' },
+            { filename: 'ejercicio14.gif', path: 'assets/gif/ejercicio14.gif' },
+            { filename: 'ejercicio15.gif', path: 'assets/gif/ejercicio15.gif' },
+            { filename: 'ejercicio16.gif', path: 'assets/gif/ejercicio16.gif' },
+            { filename: 'ejercicio17.gif', path: 'assets/gif/ejercicio17.gif' },
+            { filename: 'ejercicio18.gif', path: 'assets/gif/ejercicio18.gif' },
+            { filename: 'ejercicio19.gif', path: 'assets/gif/ejercicio19.gif' },
+            { filename: 'ejercicio20.gif', path: 'assets/gif/ejercicio20.gif' },
+            // Agregar más GIFs aquí según los archivos que tengas
+        ];
+
+        // Referencias DOM
+        const exercisesContainer = document.getElementById('exercisesContainer');
+        const progressSection = document.getElementById('progressSection');
+        const progressBar = document.getElementById('progressBar');
+        const completedCount = document.getElementById('completedCount');
+        const totalCount = document.getElementById('totalCount');
+        const progressEmoji = document.getElementById('progressEmoji');
+        const btnResetProgress = document.getElementById('btnResetProgress');
+
+        // Estado de la aplicación
+        let exercises = [];
+        let exerciseProgress = { completed: 0, total: 0 };
+        let currentExerciseId = null;
+        let countdownSoundPlayed = false;
+
+        // Sistema de sonidos
+        const SOUNDS = {
+            click: 'assets/sounds/click.mp3',
+            success: 'assets/sounds/success.mp3',
+            adjust: 'assets/sounds/adjust.mp3',
+            start: 'assets/sounds/start.mp3',
+            complete: 'assets/sounds/complete.mp3',
+            countdown: 'assets/sounds/countdown.mp3'
+        };
+
+        // Función para reproducir sonidos
+        function playSound(soundKey) {
+            try {
+                const soundPath = SOUNDS[soundKey];
+                if (soundPath) {
+                    const audio = new Audio(soundPath);
+                    audio.volume = 0.5;
+                    audio.play().catch(e => {
+                        console.log('No se pudo reproducir el sonido:', soundKey, e.message);
+                    });
+                }
+            } catch (error) {
+                console.log('Error al reproducir sonido:', error.message);
+            }
+        }
+
+        // Obtener GIF aleatorio
+        function getRandomGif() {
+            if (availableGifs.length === 0) {
+                return null;
+            }
+            const randomIndex = Math.floor(Math.random() * availableGifs.length);
+            return availableGifs[randomIndex];
+        }
+
+        // Configuración de categorías y tipos
+        const CATEGORY_CONFIG = {
+            calentamiento: { icon: '🔥', name: 'Calentamiento', class: 'calentamiento' },
+            superior: { icon: '💪', name: 'Parte Superior', class: 'superior' },
+            abdominal: { icon: '🔥', name: 'Abdominal', class: 'abdominal' },
+            piernas: { icon: '🦵', name: 'Piernas / Glúteos', class: 'piernas' }
+        };
+
+        const TYPE_CONFIG = {
+            timer: { icon: '⏰', name: 'Por tiempo', unit: 's', default: 30, min: 10, max: 120, step: 5 },
+            reps: { icon: '🔢', name: 'Por repeticiones', unit: ' reps', default: 10, min: 5, max: 50, step: 1 }
+        };
+
+        const PROGRESS_EMOJIS = {
+            0: "🌱", 25: "🌿", 50: "🌳", 75: "🌟", 100: "🏆"
+        };
+
+        const MOTIVATION_PHRASES = [
+            "¡Tú puedes hacerlo súper bien, campeona!",
+            "¡Eres increíble, princesa!",
+            "¡Vamos, súper atleta!",
+            "¡Fantástico trabajo, estrella!",
+            "¡Perfecto, sigue así reina!",
+            "¡Eres la mejor atleta!",
+            "¡Con energía, campeona!",
+            "¡Eres una guerrera increíble!"
+        ];
+
+        // Inicialización
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('🌟 JFit Kids cargado para la mejor atleta');
+            initializeApp();
+            setupResetButton();
+            setupModalListeners();
+        });
+
+        // Inicializar aplicación
+        function initializeApp() {
+            // Copiar ejercicios predefinidos
+            exercises = EXERCISES.map(exercise => ({
+                ...exercise,
+                completed: false,
+                settings: {
+                    value: TYPE_CONFIG[exercise.etype]?.default || (exercise.etype === 'timer' ? 30 : 10)
+                }
+            }));
+
+            loadExerciseSettings();
+            loadCompletedStatus();
+            renderAllExercises();
+        }
+
+        // Configurar botón de reset
+        function setupResetButton() {
+            btnResetProgress.addEventListener('click', () => {
+                playSound('click');
+                new bootstrap.Modal('#modalResetConfirm').show();
+            });
+
+            document.getElementById('confirmReset').addEventListener('click', () => {
+                resetAllProgress();
+                bootstrap.Modal.getInstance('#modalResetConfirm').hide();
+            });
+        }
+
+        // Configurar listeners de modales
+        function setupModalListeners() {
+            const btnCompleteExercise = document.getElementById('btnCompleteExercise');
+            if (btnCompleteExercise) {
+                btnCompleteExercise.addEventListener('click', () => {
+                    if (currentExerciseId) {
+                        playSound('complete');
+                        window.toggleExerciseComplete(currentExerciseId, true);
+                        
+                        const modal = bootstrap.Modal.getInstance('#modalRun');
+                        if (modal) {
+                            modal.hide();
+                        }
+                        
+                        setTimeout(() => {
+                            createConfetti();
+                        }, 200);
+                    }
+                });
+            }
+        }
+
+        // Resetear todo el progreso
+        function resetAllProgress() {
+            localStorage.removeItem('jfit_completed_exercises');
+            localStorage.removeItem('jfit_exercise_settings');
+            
+            exercises.forEach(exercise => {
+                exercise.completed = false;
+                exercise.settings = {
+                    value: TYPE_CONFIG[exercise.etype]?.default || (exercise.etype === 'timer' ? 30 : 10)
+                };
+            });
+            
+            renderAllExercises();
+            playSound('success');
+            createConfetti();
+            showToast('🔄 ¡Progreso reiniciado! ¡A empezar de nuevo, campeona!', 'success');
+        }
+
+        // Cargar configuraciones guardadas
+        function loadExerciseSettings() {
+            try {
+                const savedSettings = localStorage.getItem('jfit_exercise_settings');
+                if (savedSettings) {
+                    const settings = JSON.parse(savedSettings);
+                    exercises.forEach(exercise => {
+                        if (settings[exercise.id]) {
+                            exercise.settings = settings[exercise.id];
+                        }
+                    });
+                }
+            } catch (e) {
+                console.warn('Error loading exercise settings:', e);
+            }
+        }
+
+        // Cargar estado completado
+        function loadCompletedStatus() {
+            try {
+                const completedExercises = JSON.parse(localStorage.getItem('jfit_completed_exercises') || '[]');
+                exercises.forEach(exercise => {
+                    exercise.completed = completedExercises.includes(exercise.id);
+                });
+            } catch (e) {
+                console.warn('Error loading completed status:', e);
+            }
+        }
+
+        // Guardar configuraciones
+        function saveExerciseSettings() {
+            try {
+                const settings = {};
+                exercises.forEach(exercise => {
+                    if (exercise.settings) {
+                        settings[exercise.id] = exercise.settings;
+                    }
+                });
+                localStorage.setItem('jfit_exercise_settings', JSON.stringify(settings));
+            } catch (e) {
+                console.warn('Error saving exercise settings:', e);
+            }
+        }
+
+        // Guardar estado completado
+        function saveCompletedStatus() {
+            try {
+                const completedIds = exercises.filter(ex => ex.completed).map(ex => ex.id);
+                localStorage.setItem('jfit_completed_exercises', JSON.stringify(completedIds));
+            } catch (e) {
+                console.warn('Error saving completed status:', e);
+            }
+        }
+
+        // Renderizar todos los ejercicios agrupados por categoría
+        function renderAllExercises() {
+            exercisesContainer.innerHTML = '';
+            
+            // Agrupar por categoría
+            const exercisesByCategory = {
+                calentamiento: exercises.filter(ex => ex.category === 'calentamiento'),
+                superior: exercises.filter(ex => ex.category === 'superior'),
+                abdominal: exercises.filter(ex => ex.category === 'abdominal'),
+                piernas: exercises.filter(ex => ex.category === 'piernas')
+            };
+
+            // Renderizar cada categoría
+            Object.entries(exercisesByCategory).forEach(([category, categoryExercises]) => {
+                if (categoryExercises.length > 0) {
+                    renderCategorySection(category, categoryExercises);
+                }
+            });
+
+            updateProgress();
+        }
+
+        // Renderizar sección de categoría
+        function renderCategorySection(category, categoryExercises) {
+            const categoryConfig = CATEGORY_CONFIG[category];
+            
+            // Header de categoría
+            const categoryHeader = document.createElement('div');
+            categoryHeader.className = 'section-header';
+            categoryHeader.innerHTML = `
+                <span>${categoryConfig.icon} ${categoryConfig.name}</span>
+                <span class="section-icon">${categoryConfig.icon}</span>
+            `;
+            exercisesContainer.appendChild(categoryHeader);
+
+            // Container de ejercicios
+            const exercisesGrid = document.createElement('div');
+            exercisesGrid.className = 'row g-3 mb-4';
+            
+            categoryExercises.forEach(exercise => {
+                const exerciseElement = createExerciseElement(exercise);
+                const col = document.createElement('div');
+                col.className = 'col-md-6';
+                col.appendChild(exerciseElement);
+                exercisesGrid.appendChild(col);
+            });
+
+            exercisesContainer.appendChild(exercisesGrid);
+        }
+
+        // Crear elemento de ejercicio
+        function createExerciseElement(exercise) {
+            const categoryConfig = CATEGORY_CONFIG[exercise.category];
+            const typeConfig = TYPE_CONFIG[exercise.etype];
+            const currentValue = exercise.settings?.value || typeConfig.default;
+
+            const div = document.createElement('div');
+            div.className = `exercise-card ${exercise.completed ? 'completed' : ''}`;
+            div.style.position = 'relative';
+
+            div.innerHTML = `
+                <div class="exercise-header">
+                    <div class="exercise-icon ${categoryConfig.class}">
+                        ${categoryConfig.icon}
+                    </div>
+                    <div class="exercise-info">
+                        <h3 class="exercise-name">${escapeHtml(exercise.name)}</h3>
+                        <p class="exercise-type">${typeConfig.icon} ${typeConfig.name}</p>
+                    </div>
+                    <input type="checkbox" class="exercise-checkbox" ${exercise.completed ? 'checked' : ''} 
+                           onchange="window.toggleExerciseComplete(${exercise.id}, this.checked)">
+                </div>
+
+                <div class="exercise-controls">
+                    <div class="control-group">
+                        <button class="control-btn decrease" onclick="adjustExerciseValue(${exercise.id}, -${typeConfig.step})">-</button>
+                        <div class="control-value">${currentValue}${typeConfig.unit}</div>
+                        <button class="control-btn increase" onclick="adjustExerciseValue(${exercise.id}, ${typeConfig.step})">+</button>
+                    </div>
+                    <button class="btn-start" onclick="startExercise(${exercise.id})">
+                        ▶️ ¡Comenzar!
+                    </button>
+                </div>
+            `;
+
+            return div;
+        }
+
+        // Función para escapar HTML
+        function escapeHtml(text) {
+            if (typeof text !== 'string') return '';
+            const map = {
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#039;'
+            };
+            return text.replace(/[&<>"']/g, function(m) { return map[m]; });
+        }
+
+        // Ajustar valor de ejercicio
+        window.adjustExerciseValue = function(exerciseId, change) {
+            playSound('adjust');
+            console.log('Adjusting value for exercise:', exerciseId, 'change:', change);
+            
+            const numericId = parseInt(exerciseId);
+            const exercise = exercises.find(ex => parseInt(ex.id) === numericId);
+            
+            if (!exercise) {
+                console.error('Exercise not found:', exerciseId);
+                return;
+            }
+
+            const typeConfig = TYPE_CONFIG[exercise.etype];
+            const currentValue = exercise.settings?.value || typeConfig.default;
+            const newValue = Math.max(typeConfig.min, Math.min(typeConfig.max, currentValue + change));
+            
+            if (!exercise.settings) exercise.settings = {};
+            exercise.settings.value = newValue;
+
+            saveExerciseSettings();
+            renderAllExercises();
+            
+            createConfetti();
+        }
+
+        // Toggle completar ejercicio
+        window.toggleExerciseComplete = function(exerciseId, completed) {
+            playSound(completed ? 'success' : 'click');
+            console.log('Toggling exercise complete:', exerciseId, completed);
+            
+            const numericId = parseInt(exerciseId);
+            const exercise = exercises.find(ex => parseInt(ex.id) === numericId);
+            
+            if (!exercise) {
+                console.error('Exercise not found:', exerciseId);
+                return;
+            }
+
+            exercise.completed = completed;
+            saveCompletedStatus();
+            
+            const checkbox = document.querySelector(`[onchange*="toggleExerciseComplete(${exerciseId}"]`);
+            if (checkbox) {
+                checkbox.checked = completed;
+                
+                const card = checkbox.closest('.exercise-card');
+                if (card) {
+                    card.classList.toggle('completed', completed);
+                }
+                
+                if (completed) {
+                    createConfetti();
+                }
+            } else {
+                renderAllExercises();
+            }
+
+            updateProgress();
+        }
+
+        // Actualizar progreso
+        function updateProgress() {
+            const completedExercises = exercises.filter(ex => ex.completed).length;
+            const totalExercises = exercises.length;
+            
+            exerciseProgress.completed = completedExercises;
+            exerciseProgress.total = totalExercises;
+
+            const percentage = (completedExercises / totalExercises) * 100;
+
+            progressBar.style.width = `${percentage}%`;
+            progressBar.className = `progress-bar progress-bar-striped progress-bar-animated ${
+                percentage < 25 ? 'bg-info' : 
+                percentage < 50 ? 'bg-warning' : 
+                percentage < 75 ? 'bg-success' : 
+                'bg-primary'
+            }`;
+
+            completedCount.textContent = completedExercises;
+            totalCount.textContent = totalExercises;
+
+            const emojiKey = percentage === 0 ? 0 : 
+                             percentage <= 25 ? 25 : 
+                             percentage <= 50 ? 50 : 
+                             percentage <= 75 ? 75 : 100;
+            progressEmoji.textContent = PROGRESS_EMOJIS[emojiKey];
+
+            // Celebración al completar todo
+            if (completedExercises === totalExercises && totalExercises > 0) {
+                setTimeout(() => {
+                    const celebrationModal = document.getElementById('modalCelebration');
+                    if (celebrationModal) {
+                        new bootstrap.Modal(celebrationModal).show();
+                        createConfetti();
+                        setTimeout(() => createConfetti(), 300);
+                        setTimeout(() => createConfetti(), 600);
+                    }
+                }, 500);
+            }
+        }
+
+        // Iniciar ejercicio
+        window.startExercise = function(exerciseId) {
+            playSound('start');
+            console.log('Starting exercise:', exerciseId);
+            
+            const numericId = parseInt(exerciseId);
+            const exercise = exercises.find(ex => parseInt(ex.id) === numericId);
+            
+            if (!exercise) {
+                console.error('Exercise not found:', exerciseId);
+                return;
+            }
+
+            currentExerciseId = numericId;
+            countdownSoundPlayed = false;
+
+            const modal = new bootstrap.Modal('#modalRun');
+            const precount = document.getElementById('precount');
+            const timer = document.getElementById('timer');
+            const reps = document.getElementById('reps');
+            const precountNumber = document.getElementById('precountNumber');
+            const motivationText = document.getElementById('motivationText');
+            const gifContainer = document.getElementById('gifContainer');
+
+            // Configurar modal
+            document.getElementById('runTitle').textContent = exercise.name;
+            document.getElementById('runCategory').textContent = CATEGORY_CONFIG[exercise.category].name;
+
+            // Mostrar GIF aleatorio
+            if (gifContainer) {
+                const randomGif = getRandomGif();
+                if (randomGif) {
+                    // Verificar si el GIF existe antes de mostrarlo
+                    const img = new Image();
+                    img.onload = function() {
+                        gifContainer.innerHTML = `<img src="${randomGif.path}" alt="Ejercicio animado" class="exercise-gif">`;
+                    };
+                    img.onerror = function() {
+                        gifContainer.innerHTML = '<div class="no-gif">🎬 Sin animación disponible</div>';
+                    };
+                    img.src = randomGif.path;
+                } else {
+                    gifContainer.innerHTML = '<div class="no-gif">🎬 Sin animación disponible</div>';
+                }
+            }
+
+            // Frase motivacional aleatoria
+            if (motivationText) {
+                motivationText.textContent = MOTIVATION_PHRASES[Math.floor(Math.random() * MOTIVATION_PHRASES.length)];
+            }
+
+            // Mostrar cuenta regresiva
+            precount.classList.remove('d-none');
+            timer.classList.add('d-none');
+            reps.classList.add('d-none');
+            
+            if (precountNumber) {
+                precountNumber.textContent = '3';
+            }
+
+            modal.show();
+
+            let countdown = 3;
+            const modalElement = document.getElementById('modalRun');
+
+            // Reproducir sonido de countdown una sola vez
+            if (!countdownSoundPlayed) {
+                playSound('countdown');
+                countdownSoundPlayed = true;
+            }
+
+            const countdownInterval = setInterval(() => {
+                countdown -= 1;
+                if (precountNumber) {
+                    precountNumber.textContent = String(countdown);
+                }
+
+                if (countdown <= 0) {
+                    clearInterval(countdownInterval);
+                    runExercise(exercise);
+                }
+            }, 1000);
+
+            // Limpiar interval si se cierra el modal
+            const cleanup = () => {
+                clearInterval(countdownInterval);
+                currentExerciseId = null;
+                countdownSoundPlayed = false;
+                modalElement.removeEventListener('hidden.bs.modal', cleanup);
+            };
+            modalElement.addEventListener('hidden.bs.modal', cleanup);
+        }
+
+        // Ejecutar ejercicio
+        function runExercise(exercise) {
+            const precount = document.getElementById('precount');
+            const timer = document.getElementById('timer');
+            const reps = document.getElementById('reps');
+            const modalElement = document.getElementById('modalRun');
+            const currentValue = exercise.settings?.value || TYPE_CONFIG[exercise.etype].default;
+
+            if (exercise.etype === 'timer') {
+                // Ejercicio por tiempo
+                precount.classList.add('d-none');
+                timer.classList.remove('d-none');
+
+                let remainingTime = currentValue;
+                const totalTime = currentValue;
+
+                const updateTimer = () => {
+                    const minutes = String(Math.floor(remainingTime / 60)).padStart(2, '0');
+                    const seconds = String(remainingTime % 60).padStart(2, '0');
+                    const timerDisplayElement = document.getElementById('timerDisplay');
+
+                    if (timerDisplayElement) {
+                        timerDisplayElement.textContent = `${minutes}:${seconds}`;
+                    }
+
+                    // Actualizar barra de progreso
+                    const timerProgress = document.getElementById('timerProgress');
+                    if (timerProgress) {
+                        const percentage = (remainingTime / totalTime) * 100;
+                        timerProgress.style.width = `${percentage}%`;
+                    }
+
+                    if (remainingTime > 0) {
+                        remainingTime -= 1;
+                        timeoutId = setTimeout(updateTimer, 1000);
+                    } else {
+                        // Tiempo terminado
+                        if (timerDisplayElement) {
+                            timerDisplayElement.innerHTML = '<span class="text-success">🎉 ¡Completado!</span>';
+                        }
+                        if (timerProgress) {
+                            timerProgress.style.width = '0%';
+                            timerProgress.classList.remove('progress-bar-animated');
+                        }
+                        
+                        // Marcar como completado automáticamente
+                        setTimeout(() => {
+                            toggleExerciseComplete(exercise.id, true);
+                            const checkbox = document.querySelector(`[onchange*="toggleExerciseComplete(${exercise.id}"]`);
+                            if (checkbox) checkbox.checked = true;
+                        }, 1000);
+                    }
+                };
+
+                let timeoutId = setTimeout(updateTimer, 0);
+
+                // Limpiar timeout si se cierra el modal
+                const cleanup = () => {
+                    clearTimeout(timeoutId);
+                    modalElement.removeEventListener('hidden.bs.modal', cleanup);
+                };
+                modalElement.addEventListener('hidden.bs.modal', cleanup);
+
+            } else {
+                // Ejercicio por repeticiones
+                precount.classList.add('d-none');
+                reps.classList.remove('d-none');
+
+                const repsDisplayElement = document.getElementById('repsDisplay');
+                if (repsDisplayElement) {
+                    repsDisplayElement.textContent = `x${currentValue}`;
+                }
+            }
+        }
+
+        // Efecto confeti
+        function createConfetti(targetElement = null) {
+            const colors = ['#ff6b9d', '#a8dadc', '#457b9d', '#06d6a0', '#ffd166'];
+            const container = document.createElement('div');
+            container.style.position = 'fixed';
+            container.style.top = '0';
+            container.style.left = '0';
+            container.style.width = '100%';
+            container.style.height = '100%';
+            container.style.pointerEvents = 'none';
+            container.style.zIndex = '10000';
+            document.body.appendChild(container);
+
+            const particleCount = targetElement ? 10 : 30;
+
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.style.position = 'absolute';
+                particle.style.width = (Math.random() * 8 + 4) + 'px';
+                particle.style.height = (Math.random() * 8 + 4) + 'px';
+                particle.style.background = colors[Math.floor(Math.random() * colors.length)];
+                particle.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+
+                const startX = targetElement ? 
+                    targetElement.getBoundingClientRect().left + targetElement.offsetWidth / 2 :
+                    Math.random() * window.innerWidth;
+
+                particle.style.left = startX + (Math.random() - 0.5) * 200 + 'px';
+                particle.style.top = '-10px';
+
+                const duration = 2000 + Math.random() * 2000;
+                const endY = window.innerHeight + 10;
+                const endX = startX + (Math.random() - 0.5) * 300;
+
+                particle.animate([
+                    {
+                        transform: 'translateY(0px) translateX(0px) rotate(0deg)',
+                        opacity: 1
+                    },
+                    {
+                        transform: `translateY(${endY}px) translateX(${endX - startX}px) rotate(360deg)`,
+                        opacity: 0
+                    }
+                ], {
+                    duration: duration,
+                    easing: 'cubic-bezier(0.25, 0.46, 0.45, 0.94)'
+                });
+
+                container.appendChild(particle);
+            }
+
+            setTimeout(() => container.remove(), 4000);
+        }
+
+        // Sistema de notificaciones (toasts)
+        function showToast(message, type = 'info') {
+            let toastContainer = document.getElementById('toastContainer');
+            if (!toastContainer) {
+                toastContainer = document.createElement('div');
+                toastContainer.id = 'toastContainer';
+                toastContainer.style.position = 'fixed';
+                toastContainer.style.top = '20px';
+                toastContainer.style.right = '20px';
+                toastContainer.style.zIndex = '9999';
+                document.body.appendChild(toastContainer);
+            }
+
+            const toast = document.createElement('div');
+            toast.className = `toast show`;
+            toast.style.background = type === 'success' ? '#06d6a0' : type === 'error' ? '#f25c54' : '#457b9d';
+            toast.style.color = 'white';
+            toast.style.borderRadius = '12px';
+            toast.style.padding = '1rem';
+            toast.style.marginBottom = '0.5rem';
+            toast.style.boxShadow = '0 4px 20px rgba(0, 0, 0, 0.15)';
+            toast.style.fontWeight = '600';
+            
+            toast.innerHTML = `
+                <div class="d-flex align-items-center">
+                    <div class="flex-grow-1">${message}</div>
+                    <button type="button" class="btn-close btn-close-white ms-2" onclick="this.parentElement.parentElement.remove()" style="font-size: 0.8rem;"></button>
+                </div>
+            `;
+            
+            toastContainer.appendChild(toast);
+            
+            setTimeout(() => {
+                if (toast.parentNode) {
+                    toast.remove();
+                }
+            }, 4000);
+        }
+    </script>
+</body>
+</html>
